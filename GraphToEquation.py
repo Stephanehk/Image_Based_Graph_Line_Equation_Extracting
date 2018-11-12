@@ -9,12 +9,8 @@ Created on Fri Oct 12 13:31:45 2018
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-import collections
-from matplotlib.pyplot import subplots
-from numpy import linspace, random, sin, cos
-from scipy import interpolate
 
-img = cv2.imread("/Users/2020shatgiskessell/Desktop/graph_extracting/Test_Graphs/Graph5.png")
+img = cv2.imread("/Users/2020shatgiskessell/Desktop/graph_extracting/Test_Graphs/Graph3.jpg")
 h,w = img.shape[:2]
 mask = np.zeros((h,w), np.uint8)
 mask2 = mask = np.zeros((h,w), np.uint8)
@@ -87,21 +83,36 @@ coordinates = zip(indices[0], indices[1])
 
 #Polynomial regression
 # y = (coef0) + (coef1)x + (coef2)x^2 + (coef3)x^3 .....(coefp)x^p
-def get_equation (x,y):
-    degree = 30
-    #get equation coefficiants and residual value
-    coefs, res, _, _, _ = np.polyfit(x,y,degree, full = True)
-    #plug coefficients into polynomial
-    ffit = np.poly1d(coefs)
-    #Create domain from x mins and maxs
-    xp = np.linspace(x.min(), x.max(),70)
-    #works but prints the vertically flipped graph
-    #plot everything
-    pred_plot = ffit(xp)
-    #plt.scatter(x, y, facecolor='None', edgecolor='k', alpha=0.3)
-    plt.plot(xp, pred_plot)
-    plt.show()
 
+
+#ASK MR. JAMES ABOUT RIGHT DATA STRUCTURE
+res_coef = {}
+
+def get_correct_degree(dictionary):
+    keylist = dictionary.keys()
+    keylist = sorted (keylist)
+    return keylist[0], dictionary[keylist[0]]
+
+
+def get_equation (x,y):
+    #loop through different equations with different powers
+    for i in range (0,30):
+        #get equation coefficiants and residual value
+        coefs, res, _, _, _ = np.polyfit(x,y,i, full = True)
+        #check to see if residual is 0 (perfect fit)
+        if len(res) == 0:
+            #if it is a perfect fit, then just use that
+            ffit = np.poly1d(coefs)
+            print (ffit)
+            #Create domain from x mins and maxs
+            xp = np.linspace(x.min(), x.max(),70)
+            #works but prints the vertically flipped graph
+            #plot everything
+            pred_plot = ffit(xp)
+            #plt.scatter(x, y, facecolor='None', edgecolor='k', alpha=0.3)
+            plt.plot(xp, pred_plot)
+            plt.show()
+            break
 
     
 #-------------------------------------------------------------------------------------------------------------------------------
