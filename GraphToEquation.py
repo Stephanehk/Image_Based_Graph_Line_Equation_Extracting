@@ -10,10 +10,10 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-img = cv2.imread("/Users/2020shatgiskessell/Desktop/graph_extracting/Test_Graphs/Graph3.jpg")
+img = cv2.imread("/Users/2020shatgiskessell/Desktop/graph_extracting/Test_Graphs/Graph2.jpg")
 h,w = img.shape[:2]
 mask = np.zeros((h,w), np.uint8)
-mask2 = mask = np.zeros((h,w), np.uint8)
+mask2 = mask.copy()
 
 def find_contours(image):
     # Transform to gray colorspace and threshold the image
@@ -31,8 +31,6 @@ def find_contours(image):
 
 #----------------------------------------------------------------------------------------------------------------
 #CLEAN UP IMAGE AND JUST EXTRACT LINE
-
-
 #get the biggest contour
 cnt = max(find_contours(img), key=cv2.contourArea)
 cv2.drawContours(mask, [cnt], 0, 255, -1)
@@ -44,8 +42,7 @@ res = cv2.bitwise_and(img, img, mask=mask)
 gray = cv2.cvtColor(res,cv2.COLOR_BGR2GRAY)
 _, thresh = cv2.threshold(gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
-
-# Find all non white pixels
+# Find all non white pixels of image
 non_zero = cv2.findNonZero(thresh)
 
 # Transform all other pixels in non_white to white
@@ -57,20 +54,17 @@ for i in range(0, len(non_zero)):
 
 
 # Display the image
-#cv2.imwrite("graph3.jpg", res)
+cv2.imwrite("extractedline.png", res)
 #----------------------------------------------------------------------------------------------------------------
-#GET CONTOUR OF LINE
+#GET CONTOUR OF LINE - NOT WORKING
 i = 0
-#figure out how to select the right contour
-#get contour with largest area
-# if area > certain amount
-#   get next largest contour
-
 #Display contours
 for contour in find_contours(res):
+    #approximate the contour shape
     cv2.drawContours(mask2, [contour], 0, 255, -1)
     res2 = cv2.bitwise_and(res,res,mask=mask2)
     i = i+1
+    print (i)
 
 #Get coordinates of only white pixels (the threshold) - WORKS
 indices = np.where(mask2 == [255])
@@ -79,13 +73,9 @@ coordinates = zip(indices[0], indices[1])
 
 
 #-------------------------------------------------------------------------------------------------------------------------------
-#EACH OF THESE ARE DIFFERENT WAYS TO GET THE EQUATION OF THE GRAPH LINE
-
 #Polynomial regression
 # y = (coef0) + (coef1)x + (coef2)x^2 + (coef3)x^3 .....(coefp)x^p
 
-
-#ASK MR. JAMES ABOUT RIGHT DATA STRUCTURE
 res_coef = {}
 
 def get_correct_degree(dictionary):
