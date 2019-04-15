@@ -18,6 +18,6 @@ Output:
  + 1.147e+05 x^2 - 2.713e+06 x + 2.844e+07
  
  
-Front End:
+Frontend:
 
 ![Imgur](https://i.imgur.com/gkoOo0W.png)
